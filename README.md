@@ -211,13 +211,13 @@ After this, the commands below run the playbook:
  ```bash
  $ cd /etc/ansible
  $ ansible-playbook install_elk.yml 
- $ ansible-playbook install_filebeat.yml 
- $ ansible-playbook install_metricbeat.yml 
+ $ ansible-playbook filebeat-playbook.yml 
+ $ ansible-playbook metricbeat-playbook.yml 
  ```
 
 To verify success, wait five minutes to give ELK time to start up. 
 
-Then, run: `curl http://10.2.0.4:5601`. This is the address of Kibana. If the installation succeeded, this command should print HTML to the console.
+Then, run: `http://40.77.19.73:5601` in the browser. This is the address of Kibana. If the installation succeeded, this should display data from WEB-1, WEB-2, and WEB-3
 
 
 ---
