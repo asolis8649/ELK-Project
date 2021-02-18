@@ -17,18 +17,19 @@ This repository includes code defining the infrastructure below.
 
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the "D*mn Vulnerable Web Application"
 
-Load balancing ensures that the application will be highly **available**, in addition to restricting **inbound access** to the network. The load balancer ensures that work to process incoming traffic will be shared by both vulnerable web servers. Access controls will ensure that only authorized users — namely, ourselves — will be able to connect in the first place.
+Load balancing ensures that the application will be highly available, in addition to restricting inbound access to the network. The load balancer ensures that work to process incoming traffic will be shared by both vulnerable web servers. Access controls will ensure that only authorized users will be able to connect in the first place.
 
-Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the **file systems of the VMs on the network**, as well as watch **system metrics**, such as CPU usage; attempted SSH logins; `sudo` escalation failures; etc.
+Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the file systems of the VMs on the network, as well as watch system metrics, such as CPU usage; attempted SSH logins; `sudo` escalation failures; etc.
 
 The configuration details of each machine may be found below.
 
 | Name     |   Function  | IP Address | Operating System |
 |----------|-------------|------------|------------------|
-| Jump Box | Gateway     | 10.0.0.4   | Linux            |
-| DVWA 1   | Web Server  | 10.0.0.5   | Linux            |
-| DVWA 2   | Web Server  | 10.0.0.6   | Linux            |
-| ELK      | Monitoring  | 10.0.0.8   | Linux            |
+| Jump Box | Gateway     | 40.83.180.149   | Linux            |
+| WEB-1   | Web Server  | 10.0.0.15   | Linux            |
+| WEB-2   | Web Server  | 10.0.0.16  | Linux            |
+| WEB-3    | Web Server  | 10.0.0.18   | Linux            |
+| ELK      | Monitoring  | 10.2.0.4   | Linux  |
 
 In addition to the above, Azure has provisioned a **load balancer** in front of all machines except for the jump box. The load balancer's targets are organized into the following availability zones:
 - **Availability Zone 1**: DVWA 1 + DVWA 2
