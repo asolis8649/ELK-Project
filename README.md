@@ -135,7 +135,7 @@ The playbook is duplicated below.
 ```
 
 ### Target Machines & Beats
-This ELK server is configured to monitor the WEB-1, WEB-2, WEB-3, at `10.0.0.15`, '10.0.0.16' and `10.0.0.18`, respectively.
+This ELK server is configured to monitor the WEB-1, WEB-2, WEB-3, at `10.0.0.15`, `10.0.0.16` and `10.0.0.18`, respectively.
 
 We have installed the following Beats on these machines:
 - Filebeat
@@ -179,54 +179,40 @@ The playbook below installs filebeat on the target hosts. The playbook for insta
       name: filebeat
       enabled: yes
 ---
-
-### Using the Playbooks
-In order to use the playbooks, you will need to have an Ansible control node already configured. We use the **Jump Box** for this purpose.
-
-To use the playbooks, we must perform the following steps:
-- Copy the playbooks to the Ansible Control Node
-- Run each playbook on the appropriate targets
-
-The easiest way to copy the playbooks is to use Git:
-
-```bash
-$ cd /etc/ansible
-$ mkdir files
-# Clone Repository + IaC Files
-$ git clone https://github.com/yourusername/project-1.git
-# Move Playbooks and hosts file Into `/etc/ansible`
-$ cp project-1/playbooks/* .
-$ cp project-1/files/* ./files
 ```
 
-This copies the playbook files to the correct place.
+### Using the Playbooks
+In order to use the playbook, you will need to do the following:
+1. SSH into Jump-Box-Provisioner from local host
+2. From Jump-Box start and attach to docker container with the following command:`sudo docker container start vigilant_villani && sudo docker container attach vigilant_villani`
+3. Change directory to /etc/ansible and this is where playbooks will be created and kept
 
 Next, you must create a `hosts` file to specify which VMs to run each playbook on. Run the commands below:
 
 ```bash
 $ cd /etc/ansible
-$ cat > hosts <<EOF
-[webservers]
-10.0.0.5
-10.0.0.6
+$ nano hosts
+ [webservers]
+10.0.0.15 ansible_python_interpreter=/usr/bin/python3
+10.0.0.16 ansible_python_interpreter=/usr/bin/python3
+10.0.0.18 ansible_python_interpreter=/usr/bin/python3
 
-[elk]
-10.0.0.8
-EOF
+ [elk]
+10.2.0.4 ansible_python_interpreter=/usr/bin/python3
 ```
 
 After this, the commands below run the playbook:
 
  ```bash
  $ cd /etc/ansible
- $ ansible-playbook install_elk.yml elk
- $ ansible-playbook install_filebeat.yml webservers
- $ ansible-playbook install_metricbeat.yml webservers
+ $ ansible-playbook install_elk.yml 
+ $ ansible-playbook install_filebeat.yml 
+ $ ansible-playbook install_metricbeat.yml 
  ```
 
 To verify success, wait five minutes to give ELK time to start up. 
 
-Then, run: `curl http://10.0.0.8:5601`. This is the address of Kibana. If the installation succeeded, this command should print HTML to the console.
+Then, run: `curl http://10.2.0.4:5601`. This is the address of Kibana. If the installation succeeded, this command should print HTML to the console.
 
 
 ---
