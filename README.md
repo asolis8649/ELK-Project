@@ -75,7 +75,7 @@ The playbook implements the following tasks:
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
-  ![STUDENT TODO: Update image file path](Images/docker_ps_output.png)
+  ![](https://github.com/asolis8649/ELK-Project/blob/main/Images/ELK%20docker%20ps.PNG)
 
 
 
