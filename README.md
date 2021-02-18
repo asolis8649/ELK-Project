@@ -13,7 +13,7 @@ This document contains the following details:
 ### Description of the Topology
 This repository includes code defining the infrastructure below. 
 
-![](Images/CloudSecurityDiagram.png)
+![](https://github.com/asolis8649/ELK-Project/blob/main/Images/Cloud%20Security%20Diagram.png)
 
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the "D*mn Vulnerable Web Application"
 
