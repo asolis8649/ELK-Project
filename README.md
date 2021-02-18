@@ -31,34 +31,33 @@ The configuration details of each machine may be found below.
 | WEB-3    | Web Server  | 10.0.0.18   | Linux            |
 | ELK      | Monitoring  | 10.2.0.4   | Linux  |
 
-In addition to the above, Azure has provisioned a **load balancer** in front of all machines except for the jump box. The load balancer's targets are organized into the following availability zones:
-- **Availability Zone 1**: DVWA 1 + DVWA 2
-- **Availability Zone 2**: ELK
+In addition to the above, Azure has provisioned a load balancer in front of all machines except for the jump box. The load balancer's targets are organized into the following availability zones:
+- **Availability Set: RedTeam-AS**: WEB-1, WEB-2, WEB-3
 
 ## ELK Server Configuration
-The ELK VM exposes an Elastic Stack instance. **Docker** is used to download and manage an ELK container.
+The ELK VM exposes an Elastic Stack instance. Docker is used to download and manage an ELK container.
 
 Rather than configure ELK manually, we opted to develop a reusable Ansible Playbook to accomplish the task. This playbook is duplicated below.
 
 
-To use this playbook, one must log into the Jump Box, then issue: `ansible-playbook install_elk.yml elk`. This runs the `install_elk.yml` playbook on the `elk` host.
+To use this playbook, one must log into the Jump Box, then issue: ansible-playbook install_elk.yml elk. This runs the install_elk.yml playbook on the ELK host.
 
 ### Access Policies
 The machines on the internal network are _not_ exposed to the public Internet. 
 
-Only the **jump box** machine can accept connections from the Internet. Access to this machine is only allowed from the IP address `64.72.118.76`
-- **Note**: _Your answer will be different!_
+Only the **Jump Box** machine can accept connections from the Internet. Access to this machine is only allowed from the IP address `47.229.62.35`
 
-Machines _within_ the network can only be accessed by **each other**. The DVWA 1 and DVWA 2 VMs send traffic to the ELK server.
+Machines within the network can only be accessed by each other. The WEB-1, WEB-2, and WEB-3 VMs send traffic to the ELK server.
 
 A summary of the access policies in place can be found in the table below.
 
 | Name     | Publicly Accessible | Allowed IP Addresses |
 |----------|---------------------|----------------------|
-| Jump Box | Yes                 | 64.72.118.76         |
+| Jump Box | Yes                 | 47.229.62.35         |
 | ELK      | No                  | 10.0.0.1-254         |
-| DVWA 1   | No                  | 10.0.0.1-254         |
-| DVWA 2   | No                  | 10.0.0.1-254         |
+| WEB-1   | No                  | 10.0.0.1-254         |
+| WEB-2   | No                  | 10.0.0.1-254         |
+| WEB-3   | No                | 10.0.0.1-254           |
 
 ### Elk Configuration
 
