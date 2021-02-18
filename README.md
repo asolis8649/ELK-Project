@@ -13,7 +13,7 @@ This document contains the following details:
 ### Description of the Topology
 This repository includes code defining the infrastructure below. 
 
-![](Images/CloudSecurityDiagram.png)
+![](https://github.com/asolis8649/ELK-Project/blob/main/Images/Cloud%20Security%20Diagram.png)
 
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the "D*mn Vulnerable Web Application"
 
@@ -64,16 +64,18 @@ A summary of the access policies in place can be found in the table below.
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because it allows for quick and accurate configuration of one or many machines at one time, minimizing the risk for human error.
 
 The playbook implements the following tasks:
-- _TODO: In 3-5 bullets, explain the steps of the ELK installation play. E.g., install Docker; download image; etc._
-- ...
-- ...
+- Install Docker
+- Install Python3
+- Install docker module
+- Increase Virtual memory
+- Increase virtual memory on restart
+- Download and launch a docker elk container
+- Enable service docker on boot
 
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
-- _TODO_: Update the image file path with the name of your screenshot of docker ps output:
-
-  ![STUDENT TODO: Update image file path](Images/docker_ps_output.png)
+  ![](https://github.com/asolis8649/ELK-Project/blob/main/Images/ELK%20docker%20ps.PNG)
 
 
 
@@ -133,100 +135,89 @@ The playbook is duplicated below.
 ```
 
 ### Target Machines & Beats
-This ELK server is configured to monitor the DVWA 1 and DVWA 2 VMs, at `10.0.0.5` and `10.0.0.6`, respectively.
+This ELK server is configured to monitor the WEB-1, WEB-2, WEB-3, at `10.0.0.15`, `10.0.0.16` and `10.0.0.18`, respectively.
 
 We have installed the following Beats on these machines:
 - Filebeat
 - Metricbeat
-- Packetbeat
 
 These Beats allow us to collect the following information from each machine:
 - **Filebeat**: Filebeat detects changes to the filesystem. Specifically, we use it to collect Apache logs.
 - **Metricbeat**: Metricbeat detects changes in system metrics, such as CPU usage. We use it to detect SSH login attempts, failed `sudo` escalations, and CPU/RAM statistics.
-- **Packetbeat**: Packetbeat collects packets that pass through the NIC, similar to Wireshark. We use it to generate a trace of all activity that takes place on the network, in case later forensic analysis should be warranted.
 
-The playbook below installs Metricbeat on the target hosts. The playbook for installing Filebeat is not included, but looks essentially identical — simply replace `metricbeat` with `filebeat`, and it will work as expected.
+The playbook below installs filebeat on the target hosts. The playbook for installing metricbeat is not included, but looks essentially identical — simply replace `filebeat` with `metricbeat`, and it will work as expected.
 
 ```yaml
 ---
-- name: Install metric beat
+- name: installing and launching filebeat
   hosts: webservers
-  become: true
+  become: yes
   tasks:
-    # Use command module
-  - name: Download metricbeat
-    command: curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.4.0-amd64.deb
 
-    # Use command module
-  - name: install metricbeat
-    command: dpkg -i metricbeat-7.4.0-amd64.deb
+  - name: download filebeat deb
+    command: curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.1-amd64.deb
 
-    # Use copy module
-  - name: drop in metricbeat config
+  - name: install filebeat deb
+    command: dpkg -i filebeat-7.6.1-amd64.deb
+
+  - name: drop in filebeat.yml
     copy:
-      src: /etc/ansible/files/metricbeat-config.yml
-      dest: /etc/metricbeat/metricbeat.yml
+      src: /etc/ansible/filebeat-config.yml
+      dest: /etc/filebeat/filebeat.yml
 
-    # Use command module
-  - name: enable and configure docker module for metric beat
-    command: metricbeat modules enable docker
+  - name: enable and configure system module
+    command: filebeat modules enable system
 
-    # Use command module
-  - name: setup metric beat
-    command: metricbeat setup
+  - name: setup filebeat
+    command: filebeat setup
 
-    # Use command module
-  - name: start metric beat
-    command: service metricbeat start
+  - name: start filebeat service
+    command: service filebeat start
+
+  - name: enable service filebeat on boot
+    systemd:
+      name: filebeat
+      enabled: yes
+---
 ```
 
 ### Using the Playbooks
-In order to use the playbooks, you will need to have an Ansible control node already configured. We use the **jump box** for this purpose.
-
-To use the playbooks, we must perform the following steps:
-- Copy the playbooks to the Ansible Control Node
-- Run each playbook on the appropriate targets
-
-The easiest way to copy the playbooks is to use Git:
-
-```bash
-$ cd /etc/ansible
-$ mkdir files
-# Clone Repository + IaC Files
-$ git clone https://github.com/yourusername/project-1.git
-# Move Playbooks and hosts file Into `/etc/ansible`
-$ cp project-1/playbooks/* .
-$ cp project-1/files/* ./files
-```
-
-This copies the playbook files to the correct place.
+In order to use the playbook, you will need to do the following:
+1. SSH into Jump-Box-Provisioner from local host
+2. From Jump-Box start and attach to docker container with the following command:`sudo docker container start vigilant_villani && sudo docker container attach vigilant_villani`
+3. Change directory to /etc/ansible and this is where playbooks will be created and kept
 
 Next, you must create a `hosts` file to specify which VMs to run each playbook on. Run the commands below:
 
 ```bash
 $ cd /etc/ansible
-$ cat > hosts <<EOF
-[webservers]
-10.0.0.5
-10.0.0.6
+$ nano hosts
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
 
-[elk]
-10.0.0.8
-EOF
+ [webservers]
+10.0.0.15 ansible_python_interpreter=/usr/bin/python3
+10.0.0.16 ansible_python_interpreter=/usr/bin/python3
+10.0.0.18 ansible_python_interpreter=/usr/bin/python3
+
+ [elk]
+10.2.0.4 ansible_python_interpreter=/usr/bin/python3
+
 ```
 
 After this, the commands below run the playbook:
 
  ```bash
  $ cd /etc/ansible
- $ ansible-playbook install_elk.yml elk
- $ ansible-playbook install_filebeat.yml webservers
- $ ansible-playbook install_metricbeat.yml webservers
+ $ ansible-playbook install_elk.yml 
+ $ ansible-playbook filebeat-playbook.yml 
+ $ ansible-playbook metricbeat-playbook.yml 
  ```
 
 To verify success, wait five minutes to give ELK time to start up. 
 
-Then, run: `curl http://10.0.0.8:5601`. This is the address of Kibana. If the installation succeeded, this command should print HTML to the console.
+Then, run: `http://40.77.19.73:5601` in the browser. This is the address of Kibana. If the installation succeeded, this should display data from WEB-1, WEB-2, and WEB-3
 
 
 ---
